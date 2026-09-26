@@ -63,7 +63,7 @@ export default function Home() {
 
       <section className="hero section-pad">
         <div className="hero-copy">
-          <p className="eyebrow">Aesthetic Tech • Modern 2026</p>
+          <div className="hero-tag">Aesthetic Tech • Modern 2026</div>
           <h1>KODEX TECH SERVICES</h1>
           <h2>ONE STOP, EVERY TECH SOLUTION.</h2>
           <div className="hero-actions">
@@ -72,6 +72,8 @@ export default function Home() {
         </div>
 
         <div className="hero-visual" aria-label="Premium device mockup">
+          <div className="device-glow" />
+
           <div className="device-laptop">
             <div className="screen">
               <div className="screen-header">

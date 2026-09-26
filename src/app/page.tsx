@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from 'react';
+
 export default function Home() {
   const services = [
     {
@@ -24,10 +28,10 @@ export default function Home() {
   ];
 
   const stats = [
-    { value: '50+', label: 'Projects Delivered' },
-    { value: '50+', label: 'Happy Clients' },
-    { value: '10+', label: 'Years of Experience' },
-    { value: '100%', label: 'Client Satisfaction' },
+    { value: 50, suffix: '+', label: 'Projects Delivered' },
+    { value: 50, suffix: '+', label: 'Happy Clients' },
+    { value: 10, suffix: '+', label: 'Years of Experience' },
+    { value: 100, suffix: '%', label: 'Client Satisfaction' },
   ];
 
   const reasons = [
@@ -38,13 +42,103 @@ export default function Home() {
     'Dedicated Support',
   ];
 
+  useEffect(() => {
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.18 }
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+
+    const startCounter = (el: Element) => {
+      const targetEl = el as HTMLElement;
+      const target = Number(targetEl.dataset.target || 0);
+      const suffix = targetEl.dataset.suffix || '';
+      const prefix = targetEl.dataset.prefix || '';
+      const duration = 1400;
+      const startTime = performance.now();
+
+      const step = (time: number) => {
+        const progress = Math.min((time - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(target * eased);
+        targetEl.textContent = `${prefix}${current}${suffix}`;
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      };
+
+      requestAnimationFrame(step);
+    };
+
+    const counterElements = document.querySelectorAll('.stat-number');
+    const counterObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const targetEl = entry.target as HTMLElement;
+            if (!targetEl.dataset.animated) {
+              targetEl.dataset.animated = 'true';
+              startCounter(targetEl);
+            }
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    counterElements.forEach((el) => counterObserver.observe(el));
+
+    const handleScroll = () => {
+      const heroVisual = document.querySelector('.hero-visual');
+      if (!heroVisual) return;
+
+      const rect = heroVisual.getBoundingClientRect();
+      const shift = Math.max(-40, Math.min(40, (window.innerHeight - rect.top) / 18));
+
+      const laptop = document.querySelector('.device-laptop');
+      const phone = document.querySelector('.device-phone');
+
+      if (laptop) {
+        laptop.setAttribute(
+          'style',
+          `transform: translateY(${shift * 0.9}px) rotateX(${shift * 0.08}deg);`
+        );
+      }
+
+      if (phone) {
+        phone.setAttribute(
+          'style',
+          `transform: translateY(${shift * 1.2}px) rotateY(${shift * -0.09}deg);`
+        );
+      }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      revealObserver.disconnect();
+      counterObserver.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <main className="page-shell">
       <div className="bg-orb orb-1" />
       <div className="bg-orb orb-2" />
       <div className="bg-orb orb-3" />
 
-      <header className="topbar">
+      <header className="topbar reveal">
         <nav className="nav-wrap">
           <div className="brand">
             <div className="brand-mark">K</div>
@@ -62,7 +156,7 @@ export default function Home() {
       </header>
 
       <section className="hero section-pad">
-        <div className="hero-copy">
+        <div className="hero-copy reveal">
           <div className="hero-tag">Aesthetic Tech • Modern 2026</div>
           <h1>KODEX TECH SERVICES</h1>
           <h2>ONE STOP, EVERY TECH SOLUTION.</h2>
@@ -71,7 +165,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="hero-visual" aria-label="Premium device mockup">
+        <div className="hero-visual reveal" aria-label="Premium device mockup">
           <div className="device-glow" />
 
           <div className="device-laptop">
@@ -113,7 +207,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="intro section-pad">
+      <section id="about" className="intro section-pad reveal">
         <div className="intro-panel">
           <div className="portrait-wrap">
             <div className="portrait">
@@ -127,14 +221,14 @@ export default function Home() {
       </section>
 
       <section id="services" className="services section-pad">
-        <div className="section-heading">
+        <div className="section-heading reveal">
           <h3>OUR SERVICES</h3>
           <span>| All type of Tech Related Solution.</span>
         </div>
 
         <div className="service-grid">
           {services.map((service, index) => (
-            <article key={index} className={`service-card ${service.list ? 'list-card' : ''}`}>
+            <article key={index} className={`service-card reveal ${service.list ? 'list-card' : ''}`}>
               <div className={`service-art accent-${service.accent}`}>
                 {service.list ? (
                   <div className="bullet-panel">
@@ -176,7 +270,7 @@ export default function Home() {
       </section>
 
       <section id="process" className="why-us section-pad">
-        <div className="why-copy">
+        <div className="why-copy reveal">
           <h3>WHY CHOOSE US?</h3>
           <div className="gem-structure">
             <div className="gem-core" />
@@ -188,12 +282,21 @@ export default function Home() {
           </ul>
         </div>
 
-        <div className="stats-panel">
+        <div className="stats-panel reveal">
           <h3>OUR SUCCESS BY THE NUMBERS.</h3>
           <div className="stats-grid">
             {stats.map((stat) => (
               <div key={stat.label} className="stat-box">
-                <div className="stat-value">{stat.value}</div>
+                <div className="stat-value">
+                  <span
+                    className="stat-number"
+                    data-target={stat.value}
+                    data-suffix={stat.suffix}
+                    data-prefix={stat.value === 100 ? '' : ''}
+                  >
+                    0{stat.suffix}
+                  </span>
+                </div>
                 <div className="stat-label">{stat.label}</div>
               </div>
             ))}
@@ -202,14 +305,14 @@ export default function Home() {
       </section>
 
       <section className="mission section-pad">
-        <div className="mission-card">
+        <div className="mission-card reveal">
           <div className="vision-icon target-icon">
             <span className="target-ring" />
           </div>
           <p>To be a trusted technology partner, delivering innovative solutions that drive growth and create a lasting impact.</p>
         </div>
 
-        <div className="mission-card">
+        <div className="mission-card reveal">
           <div className="vision-icon diamond-icon">
             <span className="diamond-core" />
           </div>
@@ -217,7 +320,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="footer">
+      <footer className="footer reveal">
         <div className="footer-cta">
           <h3>LET&apos;S BUILD SOMETHING AMAZING TOGETHER!</h3>
         </div>

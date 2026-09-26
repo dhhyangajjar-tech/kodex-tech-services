@@ -820,6 +820,17 @@ body::before {
   font-size: 0.9rem;
 }
 
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @keyframes floaty {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-12px); }

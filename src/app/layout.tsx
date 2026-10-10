@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Kodex Tech Services',
-  description: 'Premium technology solutions for web, mobile, multimedia, and digital growth.',
+  title: 'Kodex Tech Services | AI-Powered Solutions',
+  description: 'Cutting-edge tech solutions powered by advanced AI algorithms.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
